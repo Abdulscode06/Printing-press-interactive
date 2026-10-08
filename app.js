@@ -1,9 +1,10 @@
-/* Lahore Precision Printworks — App · Vanilla JS */
+/* Lahore Precision Printworks — App · Premium Redesign */
 (function () {
   'use strict';
   var CFG = window.SITE_CONFIG;
   if (!CFG) { console.error('config.js must load before app.js'); return; }
 
+  /* ── Utilities ─────────────────────────────────────────── */
   function $(s, c) { return (c || document).querySelector(s); }
   function $$(s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); }
   function el(tag, a, ch) {
@@ -23,6 +24,9 @@
   function waUrl(ph, txt) {
     return 'https://wa.me/' + ph.replace(/[^0-9]/g, '') + '?text=' + encodeURIComponent(txt);
   }
+
+  var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hasFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   var STORAGE_KEY = 'lpp_rfq_draft';
   function saveDraft(d) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); } catch (e) {} }
@@ -45,6 +49,7 @@
     check: '<svg viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/></svg>'
   };
 
+  /* ── Render Functions (same data-binding as original) ──── */
   function renderHeroStats() {
     var w = $('#hero-stats'); if (!w) return;
     CFG.STATS.forEach(function (s) {
@@ -72,8 +77,8 @@
 
   function renderCapabilities() {
     var grid = $('#capabilities-grid'); if (!grid) return;
-    CFG.PRESSES.forEach(function (p) {
-      var card = el('div', { class: 'cap-card' });
+    CFG.PRESSES.forEach(function (p, idx) {
+      var card = el('div', { class: 'cap-card' + (idx === 0 ? ' cap-card--flagship' : '') });
       card.appendChild(el('div', { class: 'cap-card__type', text: p.type }));
       card.appendChild(el('div', { class: 'cap-card__name', text: p.name }));
       var meta = el('div', { class: 'cap-card__meta' });
@@ -167,9 +172,10 @@
     }, { threshold: 0.1 }).observe(qs);
   }
 
-  /* RFQ Configurator */
+  /* ── RFQ Configurator (UNCHANGED LOGIC) ────────────────── */
   var rfqNumber = genRfqNumber();
   var rafPending = false;
+  var prevSummaryValues = {};
 
   function populateRFQForm() {
     var prodSel = $('#rfq-product');
@@ -270,17 +276,47 @@
     return ok;
   }
 
+  /* Flash changed rows */
+  function flashRow(field) {
+    var row = $('.summary-list__row[data-field="' + field + '"]');
+    if (!row) return;
+    row.classList.remove('flash');
+    void row.offsetWidth; // force reflow for re-triggering
+    row.classList.add('flash');
+    setTimeout(function() { row.classList.remove('flash'); }, 400);
+  }
+
   function updateSummary() {
     var d = getFormData();
-    $('#sum-product').textContent = d.product || '\u2014';
-    var sz = '\u2014';
-    if (d.length && d.width) { sz = d.length + ' \u00d7 ' + d.width; if (d.height) sz += ' \u00d7 ' + d.height; sz += ' mm'; }
-    $('#sum-size').textContent = sz;
-    $('#sum-stock').textContent = d.stockLabel || '\u2014';
-    $('#sum-colors').textContent = d.colorLabel || '\u2014';
-    $('#sum-finishes').textContent = d.finishLabels.length ? d.finishLabels.join(', ') : '\u2014';
-    $('#sum-qty').textContent = d.qty > 0 ? fmt(d.qty) : '\u2014';
-    $('#sum-turnaround').textContent = d.turnaroundLabel || '\u2014';
+    var fields = {
+      product: d.product || '\u2014',
+      size: (function() {
+        var sz = '\u2014';
+        if (d.length && d.width) { sz = d.length + ' \u00d7 ' + d.width; if (d.height) sz += ' \u00d7 ' + d.height; sz += ' mm'; }
+        return sz;
+      })(),
+      stock: d.stockLabel || '\u2014',
+      colors: d.colorLabel || '\u2014',
+      finishes: d.finishLabels.length ? d.finishLabels.join(', ') : '\u2014',
+      qty: d.qty > 0 ? fmt(d.qty) : '\u2014',
+      turnaround: d.turnaroundLabel || '\u2014'
+    };
+
+    // Set values and flash changed ones
+    Object.keys(fields).forEach(function(key) {
+      var elId = 'sum-' + key;
+      var target = $('#' + elId);
+      if (!target) return;
+      var newVal = fields[key];
+      if (prevSummaryValues[key] !== newVal) {
+        target.textContent = newVal;
+        if (prevSummaryValues[key] !== undefined) {
+          flashRow(key);
+        }
+        prevSummaryValues[key] = newVal;
+      }
+    });
+
     var est = computeEstimate(d), rEl = $('#sum-range'), uEl = $('#sum-unit'), mp = $('#mob-est-price'), mu = $('#mob-est-unit');
     if (est) {
       var rs = 'PKR ' + fmt(est.totalLow) + ' \u2013 ' + fmt(est.totalHigh);
@@ -320,9 +356,68 @@
     return lines.join('\n');
   }
 
+  /* ── Printer Animation ─────────────────────────────────── */
+  var printerBusy = false;
+
+  function runPrinterAnimation(specText, callback) {
+    if (printerBusy || prefersReducedMotion) { callback(); return; }
+    printerBusy = true;
+
+    var overlay = $('#printer-anim');
+    var paper = $('#printer-paper');
+    if (!overlay || !paper) { callback(); printerBusy = false; return; }
+
+    paper.textContent = specText;
+    overlay.classList.add('printer-anim--active');
+
+    // Animate paper emerging
+    var targetHeight = Math.min(paper.scrollHeight, 360);
+    paper.style.maxHeight = '0px';
+
+    // Use GSAP if available, otherwise simple
+    if (window.gsap) {
+      gsap.to(paper, {
+        maxHeight: targetHeight,
+        duration: 1.2,
+        ease: 'power2.out',
+        onComplete: function() {
+          setTimeout(function() {
+            gsap.to(overlay, {
+              opacity: 0,
+              duration: 0.3,
+              onComplete: function() {
+                overlay.classList.remove('printer-anim--active');
+                overlay.style.opacity = '';
+                paper.style.maxHeight = '';
+                printerBusy = false;
+                callback();
+              }
+            });
+          }, 800);
+        }
+      });
+    } else {
+      paper.style.transition = 'max-height 1.2s ease-out';
+      paper.style.maxHeight = targetHeight + 'px';
+      setTimeout(function() {
+        overlay.classList.remove('printer-anim--active');
+        paper.style.maxHeight = '';
+        paper.style.transition = '';
+        printerBusy = false;
+        callback();
+      }, 2200);
+    }
+  }
+
   function sendWhatsApp() {
     if (!validateAndShow()) return;
-    window.open(waUrl(CFG.CONTACT.whatsapp, buildSpecText(getFormData())), '_blank', 'noopener');
+    var d = getFormData();
+    var specText = buildSpecText(d);
+    var url = waUrl(CFG.CONTACT.whatsapp, specText);
+
+    runPrinterAnimation(specText, function() {
+      window.open(url, '_blank', 'noopener');
+    });
   }
 
   function copySpec() {
@@ -391,9 +486,9 @@
       btn.classList.add('qty-preset--active');
       scheduleUpdate();
     }, { passive: true });
-    $('#btn-send-wa').addEventListener('click', sendWhatsApp, { passive: true });
-    $('#btn-copy-spec').addEventListener('click', copySpec, { passive: true });
-    $('#btn-email').addEventListener('click', emailSpec, { passive: true });
+    $('#btn-send-wa').addEventListener('click', sendWhatsApp);
+    $('#btn-copy-spec').addEventListener('click', copySpec);
+    $('#btn-email').addEventListener('click', emailSpec);
     REQUIRED.forEach(function (f) {
       var inp = $('#' + f.id); if (!inp) return;
       inp.addEventListener('input', function () {
@@ -411,11 +506,336 @@
     }, { threshold: 0.05 }).observe(qs);
   }
 
+  /* ══════════════════════════════════════════════════════════
+     DYNAMIC EFFECTS
+     ══════════════════════════════════════════════════════════ */
+
+  /* ── Header solid on scroll ─────────────────────────────── */
+  function setupHeader() {
+    var header = $('.header');
+    var sentinel = $('#header-sentinel');
+    if (!header || !sentinel || !window.IntersectionObserver) return;
+
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        header.classList.toggle('header--solid', !e.isIntersecting);
+      });
+    }, { threshold: 0 }).observe(sentinel);
+  }
+
+  /* ── Pointer tracking (single rAF loop) ─────────────────── */
+  var pointerX = 0, pointerY = 0, pointerActive = false;
+  var pointerTargets = []; // { el, handler }
+
+  function setupPointerTracking() {
+    if (!hasFinePointer) return;
+
+    document.addEventListener('mousemove', function(e) {
+      pointerX = e.clientX;
+      pointerY = e.clientY;
+      if (!pointerActive) {
+        pointerActive = true;
+        requestAnimationFrame(updatePointerEffects);
+      }
+    }, { passive: true });
+  }
+
+  function updatePointerEffects() {
+    pointerTargets.forEach(function(t) {
+      t.handler(pointerX, pointerY);
+    });
+    pointerActive = false;
+  }
+
+  /* ── Hero spotlight ─────────────────────────────────────── */
+  function setupHeroSpotlight() {
+    if (!hasFinePointer) return;
+    var spot = $('.hero__spotlight');
+    var hero = $('.hero');
+    if (!spot || !hero) return;
+
+    pointerTargets.push({
+      el: spot,
+      handler: function(x, y) {
+        var rect = hero.getBoundingClientRect();
+        if (y >= rect.top && y <= rect.bottom) {
+          spot.classList.add('hero__spotlight--active');
+          spot.style.setProperty('--mx', x + 'px');
+          spot.style.setProperty('--my', (y - rect.top) + 'px');
+        } else {
+          spot.classList.remove('hero__spotlight--active');
+        }
+      }
+    });
+  }
+
+  /* ── Press sheet tilt ───────────────────────────────────── */
+  function setupPressSheetTilt() {
+    if (!hasFinePointer) return;
+    var sheet = $('.press-sheet');
+    var container = $('.hero__press-sheet');
+    if (!sheet || !container) return;
+
+    pointerTargets.push({
+      el: sheet,
+      handler: function(x, y) {
+        var rect = container.getBoundingClientRect();
+        var cx = rect.left + rect.width / 2;
+        var cy = rect.top + rect.height / 2;
+        var dx = (x - cx) / (rect.width / 2);
+        var dy = (y - cy) / (rect.height / 2);
+        // Clamp to ±6 degrees
+        var rx = Math.max(-6, Math.min(6, -dy * 6));
+        var ry = Math.max(-6, Math.min(6, dx * 6));
+        sheet.style.setProperty('--rx', rx + 'deg');
+        sheet.style.setProperty('--ry', ry + 'deg');
+      }
+    });
+  }
+
+  /* ── Finish tile highlight tracking ─────────────────────── */
+  function setupFinishTileHighlights() {
+    var tiles = $$('.finish-tile');
+    tiles.forEach(function(tile) {
+      tile.addEventListener('mousemove', function(e) {
+        var rect = tile.getBoundingClientRect();
+        tile.style.setProperty('--fx', (e.clientX - rect.left) + 'px');
+        tile.style.setProperty('--fy', (e.clientY - rect.top) + 'px');
+      }, { passive: true });
+
+      // Touch version
+      tile.addEventListener('touchmove', function(e) {
+        var touch = e.touches[0];
+        var rect = tile.getBoundingClientRect();
+        tile.style.setProperty('--fx', (touch.clientX - rect.left) + 'px');
+        tile.style.setProperty('--fy', (touch.clientY - rect.top) + 'px');
+      }, { passive: true });
+    });
+  }
+
+  /* ── GSAP Animations ────────────────────────────────────── */
+  function setupGSAPAnimations() {
+    if (!window.gsap || !window.ScrollTrigger || prefersReducedMotion) return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Mark JS as ready (enables hidden initial states in CSS)
+    document.documentElement.classList.add('js-ready');
+
+    /* — Hero intro stagger (~0.8s total) — */
+    var heroTL = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    heroTL
+      .to('.header__logo', { opacity: 1, y: 0, duration: 0.4 }, 0)
+      .to('.header__nav a', { opacity: 1, y: 0, duration: 0.3, stagger: 0.05 }, 0.1)
+      .to('.header__cta', { opacity: 1, y: 0, duration: 0.3 }, 0.2)
+      .to('.hero__eyebrow', { opacity: 1, y: 0, duration: 0.4 }, 0.1)
+      .to('.hero__h1-line', { opacity: 1, y: 0, duration: 0.5, stagger: 0.12 }, 0.2)
+      .to('.hero__sub', { opacity: 1, y: 0, duration: 0.4 }, 0.45)
+      .to('.hero__ctas', { opacity: 1, y: 0, duration: 0.4 }, 0.55)
+      .to('.hero__press-sheet', { opacity: 1, scale: 1, duration: 0.6 }, 0.3)
+      .to('.hero__stats > div', { opacity: 1, y: 0, duration: 0.4, stagger: 0.1 }, 0.5);
+
+    // Set initial states for hero elements
+    gsap.set('.header__logo, .header__nav a, .header__cta', { opacity: 0, y: -10 });
+    gsap.set('.hero__press-sheet', { opacity: 0, scale: 0.95 });
+    gsap.set('.hero__stats > div', { opacity: 0, y: 16 });
+
+    // Replay timeline (needs to happen after sets)
+    heroTL.restart();
+
+    /* — Counter animation for hero stats — */
+    $$('.hero__stat-value').forEach(function(el) {
+      var text = el.textContent;
+      var num = parseInt(text.replace(/[^0-9]/g, ''), 10);
+      var suffix = text.replace(/[0-9]/g, '');
+      if (isNaN(num)) return;
+      var obj = { val: 0 };
+      gsap.to(obj, {
+        val: num,
+        duration: 1.5,
+        delay: 0.6,
+        ease: 'power2.out',
+        onUpdate: function() {
+          el.textContent = Math.round(obj.val) + suffix;
+        }
+      });
+    });
+
+    /* — Section heading reveal (clip-path sweep) — */
+    $$('.section__title').forEach(function(title) {
+      gsap.fromTo(title,
+        { clipPath: 'inset(0 100% 0 0)' },
+        {
+          clipPath: 'inset(0 0% 0 0)',
+          duration: 0.8,
+          ease: 'power2.inOut',
+          scrollTrigger: {
+            trigger: title,
+            start: 'top 85%',
+            once: true
+          },
+          onComplete: function() { title.classList.add('revealed'); }
+        }
+      );
+    });
+
+    /* — Section eyebrows and subtitles fade in — */
+    $$('.section__eyebrow, .section__subtitle').forEach(function(el) {
+      gsap.from(el, {
+        opacity: 0,
+        y: 16,
+        duration: 0.5,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 88%',
+          once: true
+        }
+      });
+    });
+
+    /* — Press cards stagger reveal — */
+    $$('.cap-card').forEach(function(card, i) {
+      gsap.from(card, {
+        opacity: 0,
+        y: 40,
+        duration: 0.6,
+        delay: i * 0.1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 88%',
+          once: true
+        }
+      });
+    });
+
+    /* — Finish tiles stagger — */
+    $$('.finish-tile').forEach(function(tile, i) {
+      gsap.from(tile, {
+        opacity: 0,
+        y: 32,
+        duration: 0.5,
+        delay: i * 0.08,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: tile,
+          start: 'top 88%',
+          once: true
+        }
+      });
+    });
+
+    /* — Industries stagger — */
+    $$('.industries__item').forEach(function(item, i) {
+      gsap.from(item, {
+        opacity: 0,
+        y: 12,
+        duration: 0.3,
+        delay: i * 0.05,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: item,
+          start: 'top 95%',
+          once: true
+        }
+      });
+    });
+
+    /* — Plant cards — */
+    $$('.plant-card').forEach(function(card, i) {
+      gsap.from(card, {
+        opacity: 0,
+        y: 24,
+        duration: 0.5,
+        delay: i * 0.08,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 88%',
+          once: true
+        }
+      });
+    });
+
+    /* — Job ticket reveal — */
+    var ticket = $('.job-ticket');
+    if (ticket) {
+      gsap.from(ticket, {
+        opacity: 0,
+        y: 32,
+        duration: 0.6,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: ticket,
+          start: 'top 85%',
+          once: true
+        }
+      });
+    }
+
+    /* — Press sheet parallax (gentle) — */
+    var pressSheet = $('.hero__press-sheet');
+    if (pressSheet) {
+      gsap.to(pressSheet, {
+        y: -30,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.hero',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1
+        }
+      });
+    }
+  }
+
+  /* ── 3D Card Tilt on Hover (desktop) ─────────────────────── */
+  function setupCardTilt() {
+    if (!hasFinePointer) return;
+
+    $$('.cap-card').forEach(function(card) {
+      card.addEventListener('mouseenter', function() {
+        card.style.willChange = 'transform';
+      }, { passive: true });
+
+      card.addEventListener('mousemove', function(e) {
+        var rect = card.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width - 0.5;
+        var y = (e.clientY - rect.top) / rect.height - 0.5;
+        var rx = y * -4; // max 2 degrees
+        var ry = x * 4;
+        card.style.transform = 'perspective(600px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) scale(1.01)';
+      }, { passive: true });
+
+      card.addEventListener('mouseleave', function() {
+        card.style.transform = '';
+        card.style.willChange = '';
+      }, { passive: true });
+    });
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     INIT
+     ══════════════════════════════════════════════════════════ */
   function init() {
+    // Render content (same as before)
     renderHeroStats(); renderHeroWA(); renderIndustries(); renderCapabilities();
     renderTrust(); renderPlant(); renderFooter(); renderWAFloat();
     populateRFQForm(); restoreDraft(); bindEvents();
     setupWAFloatObserver(); setupMobileEstimateBar();
+
+    // Dynamic effects
+    setupHeader();
+    setupPointerTracking();
+    setupHeroSpotlight();
+    setupPressSheetTilt();
+    setupFinishTileHighlights();
+    setupCardTilt();
+
+    // GSAP (deferred slightly to ensure layout is ready)
+    requestAnimationFrame(function() {
+      setupGSAPAnimations();
+    });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
