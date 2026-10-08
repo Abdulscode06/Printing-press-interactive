@@ -66,10 +66,10 @@
     // Initial states
     gsap.set('.hero__eyebrow, .hero__line, .hero__sub, .hero__ctas', { opacity: 0, y: 20 });
     gsap.set('.stat-item', { opacity: 0, y: 20 });
-    gsap.set('#hero-paper', { height: 0 }); // starts hidden in slot
+    gsap.set('.printed-sheet', { y: '-101%' }); // starts hidden in slot
 
     // Animation: Sheet prints out
-    tl.to('#hero-paper', { height: 'auto', duration: 1.2, ease: 'power2.inOut' }, 0.2)
+    tl.to('.printed-sheet', { y: '0%', duration: 1.2, ease: 'power2.inOut' }, 0.2)
       // Text appears as if printed
       .to('.hero__eyebrow', { opacity: 1, y: 0, duration: 0.5 }, 0.6)
       .to('.hero__line', { opacity: 1, y: 0, duration: 0.6, stagger: 0.15 }, 0.8)
@@ -485,12 +485,12 @@
 
     const ticket = $('#job-ticket');
     gsap.timeline()
-      .set(ticket, { clipPath: 'inset(100% 0 0 0)' })
-      .to(ticket, { clipPath: 'inset(0% 0 0 0)', duration: 1.2, ease: 'power1.inOut' })
+      .set(ticket, { y: '-101%' })
+      .to(ticket, { y: '0%', duration: 1.2, ease: 'power1.inOut' })
       .to({}, { duration: 0.5 }) // hold
       .call(() => {
         window.open(url, '_blank');
-        gsap.set(ticket, { clearProps: 'clipPath' });
+        gsap.set(ticket, { clearProps: 'y' });
       });
   }
 

@@ -138,7 +138,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border-bottom: 2px solid var(--bg-surface); position: relative; z-index: 2;
 }
 .press-machine-paper {
-  position: relative; top: -10px; z-index: 1; overflow: hidden;
+  position: relative; z-index: 1; overflow: hidden;
 }
 .printed-sheet {
   background: #fff; color: #000; padding: 2rem; border-radius: 2px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
@@ -165,12 +165,17 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .stat-lbl { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
 
 /* Responsive */
-@media (min-width: 1100px) {
+@media (min-width: 768px) {
+  .hero__stats { grid-template-columns: repeat(4, 1fr); margin-top: 5rem; }
+  .hero__visual { display: flex; margin: 3rem auto 0; width: 100%; max-width: 400px; }
+}
+
+@media (min-width: 992px) {
   .hamburger { display: none; }
   .header__nav { display: flex; }
-  .hero__grid { grid-template-columns: 1fr 1fr; }
-  .hero__visual { display: flex; }
-  .hero__stats { grid-template-columns: repeat(4, 1fr); margin-top: 6rem; }
+  .hero__grid { grid-template-columns: 1fr 1fr; gap: 3rem; }
+  .hero__visual { margin: 0; max-width: none; justify-content: flex-end; }
+  .hero__stats { margin-top: 6rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -806,6 +811,12 @@ body[data-light="dieline"] .mock-carton::after { display: none; }
 .quote-ticket-wrap {
   position: sticky;
   top: 120px;
+}
+
+.job-ticket-wrapper {
+  overflow: hidden;
+  margin: 0 -40px -40px;
+  padding: 0 40px 40px;
 }
 
 .job-ticket {
