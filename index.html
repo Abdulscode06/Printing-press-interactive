@@ -3,30 +3,27 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lahore Precision Printworks — Industrial Offset & Luxury Packaging</title>
+  <meta name="description" content="German-engineered offset printing and luxury packaging in Lahore. FMCG, pharma, cosmetics.">
+  <link rel="canonical" href="https://example.com/"> <!-- TODO -->
 
-  <title>Lahore Precision Printworks — Commercial Printing & Packaging</title>
-  <meta name="description" content="Lahore's leading B2B printing press specializing in folding cartons, pharma packaging, rigid boxes, and premium print finishing. Request a quote today.">
-  <link rel="canonical" href="https://example.com/"> <!-- TODO: real URL -->
-
-  <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Lahore Precision Printworks — Commercial Printing & Packaging">
-  <meta property="og:description" content="Premium offset printing, die-cutting & finishing for pharma, FMCG, cosmetics. Get an instant quote.">
-  <meta property="og:url" content="https://example.com/"> <!-- TODO: real URL -->
+  <meta property="og:title" content="Lahore Precision Printworks — Industrial Offset">
+  <meta property="og:description" content="German-engineered offset printing and luxury packaging in Lahore.">
+  <meta property="og:url" content="https://example.com/"> <!-- TODO -->
   <meta property="og:locale" content="en_PK">
-  <!-- <meta property="og:image" content="https://example.com/assets/og-image.jpg"> TODO: add OG image -->
 
-  <!-- Favicon (inline SVG) -->
+  <!-- Inline SVG favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23FF5A1F'/><text x='50%25' y='55%25' dominant-baseline='central' text-anchor='middle' fill='%230A0F1A' font-family='sans-serif' font-weight='700' font-size='18'>P</text></svg>">
 
-  <!-- Preload main font -->
+  <!-- Fonts -->
   <link rel="preload" href="assets/inter-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/inter-latin-600.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/inter-latin-700.woff2" as="font" type="font/woff2" crossorigin>
-
   <link rel="stylesheet" href="styles.css">
 
-  <!-- Config must load before app.js -->
   <script src="config.js" defer></script>
+  <script src="rfq-logic.js" defer></script>
   <script src="assets/gsap.min.js" defer></script>
   <script src="assets/ScrollTrigger.min.js" defer></script>
   <script src="app.js" defer></script>
@@ -37,445 +34,133 @@
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "Lahore Precision Printworks",
-    "description": "Commercial offset printing press specializing in folding cartons, pharma packaging, rigid boxes, and premium finishing.",
-    "url": "https://example.com/",
     "telephone": "+920000000000",
-    "email": "info@example.com",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "123 Industrial Area, Sundar Road",
+      "streetAddress": "Sundar Industrial Estate",
       "addressLocality": "Lahore",
-      "postalCode": "54000",
       "addressCountry": "PK"
-    },
-    "openingHours": "Mo-Sa 08:00-20:00",
-    "priceRange": "$$"
+    }
   }
   </script>
 </head>
-<body>
-  <!-- Skip link -->
+<body class="theme-dark">
   <a href="#quote" class="skip-link">Skip to Quote Form</a>
-
-  <!-- Noise overlay (atmosphere) -->
   <div class="noise-overlay" aria-hidden="true"></div>
 
-  <!-- Header sentinel for IntersectionObserver -->
-  <div id="header-sentinel" aria-hidden="true" style="position:absolute;top:0;left:0;width:1px;height:40px;pointer-events:none"></div>
+  <!-- Header Sentinel -->
+  <div id="header-sentinel" aria-hidden="true"></div>
 
-  <!-- ═══ HEADER ═══ -->
+  <!-- HEADER -->
   <header class="header" role="banner">
     <div class="container header__inner">
-      <a href="#" class="header__logo" aria-label="Lahore Precision Printworks — Home">
-        <span class="header__logo-accent">Lahore</span> Precision Printworks
+      <a href="#" class="header__brand" aria-label="Lahore Precision Printworks Home">
+        <div class="cmyk-dots" aria-hidden="true">
+          <span style="background-color: var(--cyan)"></span>
+          <span style="background-color: var(--magenta)"></span>
+          <span style="background-color: var(--yellow)"></span>
+          <span style="background-color: #000"></span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">LAHORE PRECISION</span>
+          <span class="brand-tagline">Printworks . Industrial Offset</span>
+        </div>
       </a>
+      
       <nav class="header__nav" aria-label="Main navigation">
-        <a href="#capabilities">Capabilities</a>
-        <a href="#finishes">Finishes</a>
+        <a href="#fleet">Fleet</a>
+        <a href="#portfolio">Finishes</a>
+        <a href="#fleet">Specs</a>
         <a href="#quote">Quote</a>
         <a href="#plant">Plant</a>
         <a href="#contact">Contact</a>
       </nav>
-      <a href="#quote" class="btn btn--primary btn--sm header__cta">Get a Quote</a>
+
+      <div class="header__actions">
+        <a href="#quote" class="btn btn--primary btn--sm header__cta">Instant RFQ</a>
+        <a href="#" class="btn btn--wa btn--icon header__wa" aria-label="Production Desk WhatsApp" id="nav-wa">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="currentColor"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a8 8 0 01-4.243-1.214l-.257-.154-2.919.868.868-2.919-.154-.257A8 8 0 1112 20z" fill="currentColor"/></svg>
+        </a>
+        <button class="hamburger" aria-label="Open menu" aria-expanded="false" id="menu-btn">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <main id="main" role="main">
-
-    <!-- ═══ HERO ═══ -->
+  <main id="main">
+    <!-- HERO -->
     <section class="hero" aria-label="Hero">
-      <!-- Orange spotlight (desktop only, positioned via CSS vars from JS) -->
-      <div class="hero__spotlight" aria-hidden="true"></div>
-      <div class="hero__glow hero__glow--orange" aria-hidden="true"></div>
-      <div class="hero__glow hero__glow--blue" aria-hidden="true"></div>
+      <div class="glow-radial glow-radial--cyan" aria-hidden="true"></div>
+      <div class="glow-radial glow-radial--orange" aria-hidden="true"></div>
 
       <div class="container hero__grid">
         <div class="hero__content">
-          <p class="hero__eyebrow">COMMERCIAL OFFSET PRINTING</p>
+          <p class="hero__eyebrow">German-engineered offset . Lahore</p>
           <h1 class="hero__h1">
-            <span class="hero__h1-line">Precision Packaging,</span>
-            <span class="hero__h1-line hero__h1-accent">Printed at Scale</span>
+            <span class="hero__line">Industrial offset printing</span>
+            <span class="hero__line">and luxury packaging,</span>
+            <span class="hero__line hero__accent">engineered in Lahore</span>
           </h1>
           <p class="hero__sub">
-            Offset folding cartons, pharma packs and rigid boxes — from artwork to palletized delivery in 10 days.
+            Precision commercial printing and high-end rigid cartons—from artwork to palletized delivery on time.
           </p>
           <div class="hero__ctas">
-            <a href="#quote" class="btn btn--primary">Get a Quote</a>
-            <a href="#" class="btn btn--wa" id="hero-wa-btn" target="_blank" rel="noopener">
-              <!-- WhatsApp icon -->
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="currentColor"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a8 8 0 01-4.243-1.214l-.257-.154-2.919.868.868-2.919-.154-.257A8 8 0 1112 20z" fill="currentColor"/></svg>
-              WhatsApp Us
+            <a href="#quote" class="btn btn--primary">Get an instant quote</a>
+            <a href="#" class="btn btn--wa-outline" id="hero-wa-btn" target="_blank" rel="noopener">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="currentColor"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a8 8 0 01-4.243-1.214l-.257-.154-2.919.868.868-2.919-.154-.257A8 8 0 1112 20z" fill="currentColor"/></svg>
+              Talk to Production Desk
             </a>
           </div>
         </div>
 
-        <!-- Press sheet visual (CSS/SVG) -->
-        <div class="hero__press-sheet" aria-hidden="true">
-          <div class="press-sheet">
-            <!-- Registration targets -->
-            <svg class="press-sheet__reg press-sheet__reg--tl" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1" fill="none"/><circle cx="12" cy="12" r="3" fill="currentColor"/><line x1="0" y1="12" x2="24" y2="12" stroke="currentColor" stroke-width="0.5"/><line x1="12" y1="0" x2="12" y2="24" stroke="currentColor" stroke-width="0.5"/></svg>
-            <svg class="press-sheet__reg press-sheet__reg--tr" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1" fill="none"/><circle cx="12" cy="12" r="3" fill="currentColor"/><line x1="0" y1="12" x2="24" y2="12" stroke="currentColor" stroke-width="0.5"/><line x1="12" y1="0" x2="12" y2="24" stroke="currentColor" stroke-width="0.5"/></svg>
-            <svg class="press-sheet__reg press-sheet__reg--bl" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1" fill="none"/><circle cx="12" cy="12" r="3" fill="currentColor"/><line x1="0" y1="12" x2="24" y2="12" stroke="currentColor" stroke-width="0.5"/><line x1="12" y1="0" x2="12" y2="24" stroke="currentColor" stroke-width="0.5"/></svg>
-
-            <!-- Crop marks -->
-            <div class="press-sheet__crop press-sheet__crop--tl"></div>
-            <div class="press-sheet__crop press-sheet__crop--tr"></div>
-            <div class="press-sheet__crop press-sheet__crop--bl"></div>
-            <div class="press-sheet__crop press-sheet__crop--br"></div>
-
-            <!-- CMYK color bar -->
-            <div class="press-sheet__colorbar">
-              <span style="background:#00FFFF"></span>
-              <span style="background:#FF00FF"></span>
-              <span style="background:#FFFF00"></span>
-              <span style="background:#000000"></span>
-              <span style="background:#FF5A1F"></span>
-              <span style="background:#00FFFF"></span>
-              <span style="background:#FF00FF"></span>
-              <span style="background:#FFFF00"></span>
-            </div>
-
-            <!-- Halftone dot pattern area -->
-            <div class="press-sheet__halftone"></div>
-
-            <!-- Inner content area -->
-            <div class="press-sheet__content">
-              <div class="press-sheet__label">PRESS PROOF — LAHORE PRECISION PRINTWORKS</div>
-              <div class="press-sheet__product">FOLDING CARTON</div>
-              <div class="press-sheet__spec">6-COLOR OFFSET · SPOT UV · 300GSM SBS</div>
+        <div class="hero__visual" aria-hidden="true">
+          <!-- Press slot animation -->
+          <div class="hero__press-machine">
+            <div class="press-machine-slot"></div>
+            <div class="press-machine-paper" id="hero-paper">
+              <div class="printed-sheet">
+                <!-- Registration marks -->
+                <svg class="reg-mark reg-tl" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" stroke="currentColor" fill="none"/><line x1="0" y1="10" x2="20" y2="10" stroke="currentColor"/><line x1="10" y1="0" x2="10" y2="20" stroke="currentColor"/></svg>
+                <svg class="reg-mark reg-tr" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" stroke="currentColor" fill="none"/><line x1="0" y1="10" x2="20" y2="10" stroke="currentColor"/><line x1="10" y1="0" x2="10" y2="20" stroke="currentColor"/></svg>
+                <svg class="reg-mark reg-bl" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" stroke="currentColor" fill="none"/><line x1="0" y1="10" x2="20" y2="10" stroke="currentColor"/><line x1="10" y1="0" x2="10" y2="20" stroke="currentColor"/></svg>
+                <svg class="reg-mark reg-br" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" stroke="currentColor" fill="none"/><line x1="0" y1="10" x2="20" y2="10" stroke="currentColor"/><line x1="10" y1="0" x2="10" y2="20" stroke="currentColor"/></svg>
+                
+                <!-- CMYK Color Bar -->
+                <div class="color-bar">
+                  <span style="background:var(--cyan)"></span><span style="background:var(--magenta)"></span><span style="background:var(--yellow)"></span><span style="background:#000"></span><span style="background:var(--accent)"></span>
+                </div>
+                
+                <div class="halftone-bg"></div>
+                <div class="sheet-content">
+                  <div class="sheet-id">PRESS PROOF // QA PASSED</div>
+                  <div class="sheet-title">LUXURY CARTON</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <div class="container">
-        <div class="hero__stats" id="hero-stats" aria-label="Key statistics">
-          <!-- Rendered by JS from config -->
+        <div class="hero__stats" id="hero-stats">
+          <!-- Populated by JS -->
         </div>
       </div>
     </section>
 
-    <!-- ═══ INDUSTRIES ═══ -->
-    <section class="industries section--below-fold" aria-label="Industries we serve">
-      <div class="container">
-        <div class="industries__list" id="industries-list">
-          <!-- Rendered by JS from config -->
-        </div>
-      </div>
-    </section>
+    <!-- PORTFOLIO PLACEHOLDER -->
+    <section id="portfolio" class="section section--surface"></section>
+    
+    <!-- FLEET PLACEHOLDER -->
+    <section id="fleet" class="section section--base"></section>
 
-    <!-- ═══ CAPABILITIES ═══ -->
-    <section id="capabilities" class="section section--base section--below-fold" aria-label="Our capabilities">
-      <div class="section__glow section__glow--left" aria-hidden="true"></div>
-      <div class="container">
-        <p class="section__eyebrow">EQUIPMENT</p>
-        <h2 class="section__title">Press &amp; Finishing <span class="section__title-accent">Capabilities</span></h2>
-        <p class="section__subtitle">World-class offset and post-press equipment configured for packaging production.</p>
-        <div class="capabilities__grid" id="capabilities-grid">
-          <!-- Rendered by JS from config -->
-        </div>
-      </div>
-    </section>
+    <!-- QUOTE PLACEHOLDER -->
+    <section id="quote" class="section section--surface"></section>
 
-    <!-- ═══ FINISH SHOWCASE ═══ -->
-    <section id="finishes" class="section section--surface section--below-fold" aria-label="Premium finishes">
-      <div class="section__glow section__glow--right" aria-hidden="true"></div>
-      <div class="container">
-        <p class="section__eyebrow">FINISHING</p>
-        <h2 class="section__title">Premium <span class="section__title-accent">Finishes</span></h2>
-        <p class="section__subtitle">Elevate your packaging with specialty finishes that command shelf attention.</p>
-        <div class="finish-showcase" id="finish-showcase">
-          <!-- Spot UV -->
-          <div class="finish-tile" data-finish="spot-uv">
-            <div class="finish-tile__highlight" aria-hidden="true"></div>
-            <div class="finish-tile__icon">
-              <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="14" stroke="currentColor" stroke-width="1.5"/><circle cx="20" cy="20" r="6" fill="currentColor" opacity="0.3"/><path d="M20 6v4M20 30v4M6 20h4M30 20h4" stroke="currentColor" stroke-width="1"/></svg>
-            </div>
-            <h3 class="finish-tile__name">Spot UV</h3>
-            <p class="finish-tile__desc">High-gloss selective coating for dramatic contrast on matte substrates.</p>
-          </div>
-          <!-- Hot Foil -->
-          <div class="finish-tile finish-tile--foil" data-finish="hot-foil">
-            <div class="finish-tile__highlight" aria-hidden="true"></div>
-            <div class="finish-tile__icon">
-              <svg viewBox="0 0 40 40" fill="none"><rect x="8" y="10" width="24" height="20" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M14 18l4 6h-8l4-6zM22 16l6 8h-12l6-8z" fill="currentColor" opacity="0.2"/><circle cx="28" cy="14" r="3" fill="currentColor" opacity="0.3"/></svg>
-            </div>
-            <h3 class="finish-tile__name">Hot Foil</h3>
-            <p class="finish-tile__desc">Metallic foil stamping in gold, silver, copper and holographic finishes.</p>
-          </div>
-          <!-- Embossing -->
-          <div class="finish-tile" data-finish="embossing">
-            <div class="finish-tile__highlight" aria-hidden="true"></div>
-            <div class="finish-tile__icon">
-              <svg viewBox="0 0 40 40" fill="none"><path d="M10 28c0-2 3-6 10-6s10 4 10 6" stroke="currentColor" stroke-width="1.5"/><path d="M12 24c0-2 2-5 8-5s8 3 8 5" stroke="currentColor" stroke-width="1" opacity="0.5"/><path d="M14 20c0-1.5 2-4 6-4s6 2.5 6 4" stroke="currentColor" stroke-width="0.75" opacity="0.3"/></svg>
-            </div>
-            <h3 class="finish-tile__name">Embossing</h3>
-            <p class="finish-tile__desc">Multi-level relief embossing and debossing for tactile brand presence.</p>
-          </div>
-          <!-- Soft-touch -->
-          <div class="finish-tile" data-finish="soft-touch">
-            <div class="finish-tile__highlight" aria-hidden="true"></div>
-            <div class="finish-tile__icon">
-              <svg viewBox="0 0 40 40" fill="none"><rect x="8" y="8" width="24" height="24" rx="4" stroke="currentColor" stroke-width="1.5"/><path d="M12 20c2-4 6-4 8 0s6 4 8 0" stroke="currentColor" stroke-width="1.5" opacity="0.4"/></svg>
-            </div>
-            <h3 class="finish-tile__name">Soft-touch</h3>
-            <p class="finish-tile__desc">Velvety matte lamination for a premium tactile finish that invites touch.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- PLANT PLACEHOLDER -->
+    <section id="plant" class="section section--base"></section>
 
-    <!-- ═══ RFQ CONFIGURATOR ═══ -->
-    <section id="quote" class="section section--base" aria-label="Request a quote">
-      <div class="section__glow section__glow--center" aria-hidden="true"></div>
-      <div class="container">
-        <div class="rfq__header">
-          <p class="section__eyebrow">CONFIGURE</p>
-          <h2 class="section__title">Configure Your <span class="section__title-accent">Print Job</span></h2>
-          <p class="section__subtitle" style="margin-left:auto;margin-right:auto;">
-            Fill in the specs below for an indicative price range. We'll confirm the final quote after artwork review.
-          </p>
-        </div>
-
-        <div class="rfq__layout">
-          <!-- Form -->
-          <div class="rfq__form-wrap">
-            <div id="rfq-form" role="form" aria-label="RFQ configurator">
-
-              <!-- Product type -->
-              <div class="form-group">
-                <label for="rfq-product" class="form-label form-label--required">Product Type</label>
-                <select id="rfq-product" class="form-select" required>
-                  <option value="">Select a product…</option>
-                </select>
-                <div class="form-error" id="rfq-product-error" role="alert">Please select a product type.</div>
-              </div>
-
-              <!-- Size -->
-              <div class="form-group">
-                <label class="form-label">Dimensions <span class="form-label__unit">(mm)</span></label>
-                <div class="size-row">
-                  <div>
-                    <input type="number" id="rfq-length" class="form-input" placeholder="Length" inputmode="decimal" min="1" step="any" aria-label="Length in mm">
-                  </div>
-                  <div>
-                    <input type="number" id="rfq-width" class="form-input" placeholder="Width" inputmode="decimal" min="1" step="any" aria-label="Width in mm">
-                  </div>
-                  <div>
-                    <input type="number" id="rfq-height" class="form-input" placeholder="Height" inputmode="decimal" min="0" step="any" aria-label="Height in mm">
-                  </div>
-                </div>
-                <div class="form-hint">L × W × H. Height is optional for flat items.</div>
-              </div>
-
-              <!-- Paper stock -->
-              <div class="form-group">
-                <label for="rfq-stock" class="form-label form-label--required">Paper Stock &amp; GSM</label>
-                <select id="rfq-stock" class="form-select" required>
-                  <option value="">Select stock…</option>
-                </select>
-                <div class="form-error" id="rfq-stock-error" role="alert">Please select a paper stock.</div>
-              </div>
-
-              <!-- Colors -->
-              <div class="form-group">
-                <label for="rfq-colors" class="form-label form-label--required">Colors</label>
-                <select id="rfq-colors" class="form-select" required>
-                  <option value="">Select color mode…</option>
-                </select>
-                <div class="form-error" id="rfq-colors-error" role="alert">Please select a color option.</div>
-              </div>
-
-              <!-- Finishes -->
-              <div class="form-group">
-                <label class="form-label">Finishes</label>
-                <div class="checkbox-group" id="rfq-finishes">
-                  <!-- Rendered by JS -->
-                </div>
-              </div>
-
-              <!-- Quantity -->
-              <div class="form-group">
-                <label for="rfq-qty" class="form-label form-label--required">Quantity</label>
-                <input type="number" id="rfq-qty" class="form-input" placeholder="e.g. 5000" inputmode="numeric" min="100" required aria-label="Quantity">
-                <div class="qty-presets" id="rfq-qty-presets" aria-label="Quick quantity presets">
-                  <!-- Rendered by JS -->
-                </div>
-                <div class="form-error" id="rfq-qty-error" role="alert">Please enter a quantity (min 100).</div>
-              </div>
-
-              <!-- Turnaround -->
-              <div class="form-group">
-                <label for="rfq-turnaround" class="form-label form-label--required">Turnaround</label>
-                <select id="rfq-turnaround" class="form-select" required>
-                  <option value="">Select turnaround…</option>
-                </select>
-                <div class="form-error" id="rfq-turnaround-error" role="alert">Please select a turnaround option.</div>
-              </div>
-
-              <div class="form-divider"></div>
-
-              <!-- Company -->
-              <div class="form-group">
-                <label for="rfq-company" class="form-label form-label--required">Company Name</label>
-                <input type="text" id="rfq-company" class="form-input" placeholder="Your company" required>
-                <div class="form-error" id="rfq-company-error" role="alert">Please enter your company name.</div>
-              </div>
-
-              <!-- Contact name -->
-              <div class="form-group">
-                <label for="rfq-name" class="form-label form-label--required">Contact Name</label>
-                <input type="text" id="rfq-name" class="form-input" placeholder="Full name" required>
-                <div class="form-error" id="rfq-name-error" role="alert">Please enter your name.</div>
-              </div>
-
-              <!-- Phone -->
-              <div class="form-group">
-                <label for="rfq-phone" class="form-label form-label--required">Phone (WhatsApp)</label>
-                <input type="tel" id="rfq-phone" class="form-input" placeholder="+92 3XX XXXXXXX" required aria-describedby="rfq-phone-hint">
-                <div class="form-hint" id="rfq-phone-hint">Include country code. This number will be used for WhatsApp follow-up.</div>
-                <div class="form-error" id="rfq-phone-error" role="alert">Please enter a valid phone number (7–15 digits).</div>
-              </div>
-
-              <!-- Notes -->
-              <div class="form-group">
-                <label for="rfq-notes" class="form-label">Additional Notes</label>
-                <textarea id="rfq-notes" class="form-textarea" placeholder="Special requirements, artwork details, delivery location…"></textarea>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- Summary panel — Job Ticket -->
-          <div class="rfq__summary-wrap">
-            <div class="job-ticket" aria-live="polite" aria-label="Quote summary">
-              <!-- Perforated edge -->
-              <div class="job-ticket__perforation" aria-hidden="true"></div>
-
-              <div class="job-ticket__header">
-                <div class="job-ticket__logo">LPP</div>
-                <div>
-                  <div class="job-ticket__title">JOB TICKET</div>
-                  <div class="job-ticket__rfq" id="rfq-number"></div>
-                </div>
-              </div>
-
-              <div class="job-ticket__body">
-                <div class="summary-list" id="summary-list">
-                  <div class="summary-list__row" data-field="product">
-                    <span class="summary-list__label">PRODUCT</span>
-                    <span class="summary-list__value" id="sum-product">—</span>
-                  </div>
-                  <div class="summary-list__row" data-field="size">
-                    <span class="summary-list__label">SIZE</span>
-                    <span class="summary-list__value" id="sum-size">—</span>
-                  </div>
-                  <div class="summary-list__row" data-field="stock">
-                    <span class="summary-list__label">STOCK</span>
-                    <span class="summary-list__value" id="sum-stock">—</span>
-                  </div>
-                  <div class="summary-list__row" data-field="colors">
-                    <span class="summary-list__label">COLORS</span>
-                    <span class="summary-list__value" id="sum-colors">—</span>
-                  </div>
-                  <div class="summary-list__row" data-field="finishes">
-                    <span class="summary-list__label">FINISHES</span>
-                    <span class="summary-list__value" id="sum-finishes">—</span>
-                  </div>
-                  <div class="summary-list__row" data-field="qty">
-                    <span class="summary-list__label">QUANTITY</span>
-                    <span class="summary-list__value" id="sum-qty">—</span>
-                  </div>
-                  <div class="summary-list__row" data-field="turnaround">
-                    <span class="summary-list__label">TURNAROUND</span>
-                    <span class="summary-list__value" id="sum-turnaround">—</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="job-ticket__estimate">
-                <div class="summary-estimate" id="summary-estimate">
-                  <div class="summary-estimate__label">INDICATIVE ESTIMATE</div>
-                  <div class="summary-estimate__range" id="sum-range" aria-live="polite">Fill in specs above</div>
-                  <div class="summary-estimate__unit" id="sum-unit"></div>
-                  <div class="summary-estimate__note">Indicative only. Final quote after artwork and stock review.</div>
-                </div>
-              </div>
-
-              <div class="job-ticket__actions">
-                <button type="button" class="btn btn--wa btn--send-wa" id="btn-send-wa" disabled>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="currentColor"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a8 8 0 01-4.243-1.214l-.257-.154-2.919.868.868-2.919-.154-.257A8 8 0 1112 20z" fill="currentColor"/></svg>
-                  Send RFQ on WhatsApp
-                </button>
-                <div class="summary-secondary">
-                  <button type="button" class="btn btn--secondary btn--sm" id="btn-copy-spec" disabled>Copy Spec</button>
-                  <button type="button" class="btn btn--secondary btn--sm" id="btn-email" disabled>Email Instead</button>
-                </div>
-              </div>
-
-              <!-- Printer animation container -->
-              <div class="printer-anim" id="printer-anim" aria-hidden="true">
-                <div class="printer-anim__body">
-                  <div class="printer-anim__slot"></div>
-                  <div class="printer-anim__paper" id="printer-paper"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ═══ TRUST ═══ -->
-    <section id="trust" class="section section--surface section--below-fold trust" aria-label="Certifications and clients">
-      <div class="container">
-        <p class="section__eyebrow">TRUST</p>
-        <h2 class="section__title">Certifications &amp; <span class="section__title-accent">Clients</span></h2>
-        <div class="trust__certs" id="trust-certs">
-          <!-- Rendered by JS if enabled -->
-        </div>
-        <div class="trust__clients" id="trust-clients">
-          <!-- Rendered by JS if clients exist -->
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══ PLANT & CONTACT ═══ -->
-    <section id="plant" class="section section--base section--below-fold" aria-label="Plant and contact information">
-      <div class="container">
-        <p class="section__eyebrow">FACILITY</p>
-        <h2 class="section__title">Our <span class="section__title-accent">Plant</span></h2>
-        <p class="section__subtitle">Visit our facility or get in touch for a consultation.</p>
-        <div class="plant__grid" id="plant-grid">
-          <!-- Rendered by JS from config -->
-        </div>
-      </div>
-    </section>
   </main>
-
-  <!-- ═══ FOOTER ═══ -->
-  <footer id="contact" class="footer" role="contentinfo">
-    <div class="container">
-      <p class="footer__text">
-        &copy; <span id="footer-year"></span> Lahore Precision Printworks. All rights reserved.
-      </p>
-    </div>
-  </footer>
-
-  <!-- Floating WhatsApp button (mobile) -->
-  <a href="#" class="wa-float" id="wa-float" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="currentColor"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a8 8 0 01-4.243-1.214l-.257-.154-2.919.868.868-2.919-.154-.257A8 8 0 1112 20z" fill="currentColor"/></svg>
-  </a>
-
-  <!-- Mobile estimate bar -->
-  <div class="mobile-estimate-bar" id="mobile-estimate-bar" aria-live="polite">
-    <div>
-      <div class="mobile-estimate-bar__price" id="mob-est-price">—</div>
-      <div class="mobile-estimate-bar__unit" id="mob-est-unit"></div>
-    </div>
-    <a href="#quote" class="btn btn--primary btn--sm">Send Quote</a>
-  </div>
-
 </body>
 </html>
