@@ -1,0 +1,118 @@
+    <!-- QUOTE -->
+    <section id="quote" class="section section--surface">
+      <div class="container">
+        <p class="section__eyebrow">Instant estimation</p>
+        <h2 class="section__title">Configure & <span class="section__accent">Quote</span></h2>
+        
+        <div class="quote-grid">
+          <div class="quote-form" id="quote-form">
+            
+            <div class="form-group">
+              <label>Product Type</label>
+              <select id="rfq-product">
+                <option value="Folding Carton">Folding Carton</option>
+                <option value="Rigid Box">Premium Rigid Box</option>
+                <option value="Mailer Box">Corrugated Mailer</option>
+                <option value="Labels">Roll Labels</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Dimensions (L x W x H mm)</label>
+              <div class="dim-inputs">
+                <input type="number" id="rfq-length" placeholder="L" value="120">
+                <span>×</span>
+                <input type="number" id="rfq-width" placeholder="W" value="80">
+                <span>×</span>
+                <input type="number" id="rfq-height" placeholder="H" value="45">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>Grammage (GSM) <span id="gsm-val-display" style="float:right;color:var(--accent);">399 GSM</span></label>
+              <input type="range" id="rfq-gsm" min="128" max="400" value="399" class="slider">
+              <div class="slider-ticks" id="gsm-ticks"></div>
+            </div>
+
+            <div class="form-group">
+              <label>Paper Stock</label>
+              <select id="rfq-stock"></select>
+            </div>
+
+            <div class="form-group">
+              <label>Printing (Colors)</label>
+              <select id="rfq-colors"></select>
+            </div>
+
+            <div class="form-group">
+              <label>Surface Finishes</label>
+              <div class="checkbox-grid" id="rfq-finishes">
+                <!-- Checkboxes populated by JS -->
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Quantity <span id="qty-val-display" style="float:right;color:var(--accent);">10,000 units</span></label>
+              <div class="qty-wrap">
+                <input type="range" id="rfq-qty-slider" min="0" max="5" value="2" class="slider" step="1">
+                <input type="number" id="rfq-qty-input" value="10000" style="width:100px;">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Production Timeline</label>
+              <select id="rfq-turnaround"></select>
+            </div>
+            
+            <div class="form-group">
+              <label>Client Details</label>
+              <input type="text" id="rfq-company" placeholder="Company Name *" required>
+              <input type="text" id="rfq-name" placeholder="Contact Name" style="margin-top:0.5rem;">
+              <input type="tel" id="rfq-phone" placeholder="WhatsApp Number *" required style="margin-top:0.5rem;">
+              <textarea id="rfq-notes" placeholder="Additional notes..." rows="2" style="margin-top:0.5rem;"></textarea>
+            </div>
+            <div id="rfq-company-error" class="form-error">Company and WhatsApp number are required.</div>
+
+          </div>
+
+          <!-- Sticky Job Ticket -->
+          <div class="quote-ticket-wrap">
+            <div class="job-ticket" id="job-ticket">
+              <div class="ticket-header">
+                <div class="ticket-logo">
+                  <svg width="12" height="12" viewBox="0 0 24 24"><circle cx="6" cy="6" r="4" fill="var(--cyan)"/><circle cx="18" cy="6" r="4" fill="var(--magenta)"/><circle cx="6" cy="18" r="4" fill="var(--yellow)"/><circle cx="18" cy="18" r="4" fill="#111"/></svg>
+                  <span>LPW // JOB TICKET</span>
+                </div>
+                <div class="ticket-id" id="ticket-id">RFQ-0000</div>
+              </div>
+              
+              <div class="ticket-body" id="ticket-body">
+                <div class="ticket-row"><span class="t-lbl">Band</span><span class="t-val" id="sum-band">Loading...</span></div>
+                <div class="ticket-row"><span class="t-lbl">Product</span><span class="t-val" id="sum-product">Folding Carton</span></div>
+                <div class="ticket-row"><span class="t-lbl">Format</span><span class="t-val" id="sum-dims">120x80x45 mm</span></div>
+                <div class="ticket-row"><span class="t-lbl">Stock</span><span class="t-val" id="sum-stock">399 GSM Art Card</span></div>
+                <div class="ticket-row"><span class="t-lbl">Colors</span><span class="t-val" id="sum-colors">4/4 Full Color</span></div>
+                <div class="ticket-row"><span class="t-lbl">Finishes</span><span class="t-val" id="sum-finishes">None</span></div>
+                <div class="ticket-row"><span class="t-lbl">Quantity</span><span class="t-val" id="sum-qty">10,000</span></div>
+                <div class="ticket-row"><span class="t-lbl">Timeline</span><span class="t-val" id="sum-timeline">Standard</span></div>
+              </div>
+
+              <div class="ticket-total">
+                <div class="est-label">INDICATIVE ESTIMATE</div>
+                <div class="est-range" id="sum-range">PKR 0 - PKR 0</div>
+                <div class="est-unit" id="sum-unit">PKR 0.00 / unit</div>
+              </div>
+
+              <button class="btn btn--wa ticket-btn" id="btn-send-wa">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm5.077 14.561c-.198.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+                Send RFQ on WhatsApp
+              </button>
+            </div>
+            
+            <div class="ticket-printer-anim" id="printer-anim">
+              <div class="printer-slot"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
