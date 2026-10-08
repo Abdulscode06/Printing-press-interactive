@@ -914,3 +914,109 @@ body[data-light="dieline"] .mock-carton::after { display: none; }
 
 /* Fix horizontal scroll */
 html, body { overflow-x: hidden; width: 100%; }
+
+/* ==========================================================================
+   PLANT, TRUST, FOOTER
+   ========================================================================== */
+
+.facilities-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+@media (min-width: 768px) {
+  .facilities-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.facility-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  padding: 2rem;
+  border-radius: 0.75rem;
+  transition: border-color 0.3s;
+}
+.facility-card.highlight {
+  border-color: rgba(46, 229, 157, 0.4);
+}
+.facility-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.facility-card.highlight .facility-title { color: var(--wa); }
+.facility-desc {
+  font-size: 0.875rem;
+  color: var(--text-2);
+}
+
+.trust-section {
+  padding: 6rem 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.text-center { text-align: center; }
+.trust-claims {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+.claim-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255,255,255,0.05);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+.confidentiality-notice {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  background: rgba(0,0,0,0.2);
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+}
+
+.footer {
+  background: var(--bg-base);
+  padding: 4rem 0 2rem;
+}
+.footer__content {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  margin-bottom: 4rem;
+}
+@media (min-width: 768px) {
+  .footer__content { flex-direction: row; justify-content: space-between; }
+}
+.footer__brand { max-width: 300px; }
+.footer__desc { font-size: 0.875rem; color: var(--text-muted); margin-top: 1rem; }
+
+.footer__contact a {
+  display: block;
+  color: var(--text-2);
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  transition: color 0.2s;
+}
+.footer__contact a:hover { color: var(--text); }
+.footer__contact .wa-link { color: var(--wa); font-weight: 600; margin-bottom: 1.5rem; display: inline-flex; align-items: center; gap: 0.5rem;}
+
+.footer__bottom {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--line);
+  padding-top: 2rem;
+}

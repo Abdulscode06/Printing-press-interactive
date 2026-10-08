@@ -144,6 +144,13 @@ const SITE_CONFIG = {
       pressUnit: 'Heidelberg XL 106'
     }
   ],
+  FACILITIES: [
+    { name: '45,000 sq ft Plant', desc: 'Climate-controlled pressroom ensuring perfect paper conditioning.' },
+    { name: 'Redundant Backup', desc: '500kVA uninterruptible diesel backup for zero downtime.', highlight: true },
+    { name: 'In-house CTP', desc: 'Thermal plate-setting directly from studio to press.' },
+    { name: 'Post-Press Finishing', desc: 'Die-cutting, folding, gluing and premium foil stamping in one facility.' },
+    { name: 'FSC Certified', desc: 'Committed to responsible forestry.', highlight: true }
+  ],
   CLAIMS: [
     { name: 'ISO 9001:2015', enabled: false, verifyUrl: '#' },
     { name: 'FSC Certified', enabled: false, verifyUrl: '#' }
