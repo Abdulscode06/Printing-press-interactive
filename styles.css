@@ -110,6 +110,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .hamburger span { display: block; width: 24px; height: 2px; background: var(--text); transition: 0.2s; }
 
+@media (max-width: 991px) {
+  .header__wa { display: none; }
+}
+
 /* --------------------------------------------------------------------------
    HERO
    -------------------------------------------------------------------------- */
@@ -755,6 +759,7 @@ body[data-light="dieline"] .mock-carton::after { display: none; }
   align-items: center;
   gap: 0.5rem;
 }
+.dim-inputs input { min-width: 0; }
 .dim-inputs span { color: var(--text-muted); }
 
 /* Custom Sliders */
@@ -830,9 +835,7 @@ body[data-light="dieline"] .mock-carton::after { display: none; }
 }
 
 .job-ticket-wrapper {
-  overflow: hidden;
-  margin: 0 -40px -40px;
-  padding: 0 40px 40px;
+  clip-path: inset(0 -50px -50px -50px);
 }
 
 .job-ticket {
