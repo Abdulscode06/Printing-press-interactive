@@ -5,7 +5,7 @@
 (function () {
   'use strict';
   
-  const CFG = window.SITE_CONFIG;
+  const CFG = typeof SITE_CONFIG !== 'undefined' ? SITE_CONFIG : window.SITE_CONFIG;
   if (!CFG) { console.error('Missing config.js'); return; }
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -117,6 +117,113 @@
   }
 
   // --------------------------------------------------------------------------
+  // Portfolio Segment & Cards
+  // --------------------------------------------------------------------------
+  function renderPortfolio() {
+    const grid = $('#portfolio-grid');
+    if (!grid) return;
+
+    CFG.PORTFOLIO.forEach(item => {
+      const effectClass = item.id ? `effect--${item.id}` : '';
+      const effectText = item.id === 'spotuv' ? 'UV' : 
+                         item.id === 'foil' ? 'FOIL' :
+                         item.id === 'emboss' ? '3D' :
+                         item.id === 'dripoff' ? 'DRIP' :
+                         item.id === 'holographic' ? 'HOLO' : 'LUX';
+
+      const card = el('div', { class: 'port-card', 'data-id': item.id }, [
+        el('div', { class: 'port-card__visual' }, [
+          el('div', { class: 'mock-carton' }, [
+            el('div', { class: `effect-layer ${effectClass}`, text: effectText })
+          ])
+        ]),
+        el('div', { class: 'port-card__content' }, [
+          el('div', { class: 'port-tags' }, item.tags.map(t => el('span', { text: t }))),
+          el('h3', { class: 'port-title', text: item.title }),
+          el('p', { class: 'port-desc', text: item.desc }),
+          el('div', { class: 'port-specs' }, [
+            el('span', { text: `Packaging: ${item.tags[1] || 'Carton'}` }),
+            el('span', { text: `Registration: +/-0.08mm` })
+          ])
+        ])
+      ]);
+      grid.appendChild(card);
+    });
+  }
+
+  function initPortfolio() {
+    renderPortfolio();
+
+    const filters = $$('.chip');
+    const cards = $$('.port-card');
+    
+    // Filter Logic
+    filters.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filters.forEach(b => b.classList.remove('chip--active'));
+        btn.classList.add('chip--active');
+        const filter = btn.dataset.filter;
+        
+        cards.forEach(card => {
+          if (filter === 'all' || card.dataset.id === filter) {
+            card.classList.remove('hidden');
+            // small animation kick
+            requestAnimationFrame(() => {
+              card.style.opacity = 1;
+              card.style.transform = 'scale(1)';
+            });
+          } else {
+            card.style.opacity = 0;
+            card.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+              // Ensure we are still filtering this out (in case of fast clicks)
+              if (btn.classList.contains('chip--active')) {
+                card.classList.add('hidden');
+              }
+            }, 400); // match transition
+          }
+        });
+      });
+    });
+
+    // Segmented Control Logic
+    const lightBtns = $$('.seg-btn');
+    lightBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        lightBtns.forEach(b => {
+          b.classList.remove('seg-btn--active');
+          b.setAttribute('aria-checked', 'false');
+        });
+        btn.classList.add('seg-btn--active');
+        btn.setAttribute('aria-checked', 'true');
+        document.body.dataset.light = btn.dataset.light;
+      });
+    });
+
+    // Pointer Highlight
+    if (hasFinePointer) {
+      const visuals = $$('.port-card__visual');
+      let rafId = null;
+
+      visuals.forEach(visual => {
+        visual.addEventListener('mousemove', e => {
+          const rect = visual.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * 100;
+          const y = ((e.clientY - rect.top) / rect.height) * 100;
+          
+          if (!rafId) {
+            rafId = requestAnimationFrame(() => {
+              visual.style.setProperty('--mx', `${x.toFixed(1)}%`);
+              visual.style.setProperty('--my', `${y.toFixed(1)}%`);
+              rafId = null;
+            });
+          }
+        });
+      });
+    }
+  }
+
+  // --------------------------------------------------------------------------
   // Boot
   // --------------------------------------------------------------------------
   function init() {
@@ -124,6 +231,7 @@
     initHeader();
     initHeroAnimation();
     initHeroParallax();
+    initPortfolio();
   }
 
   if (document.readyState === 'loading') {

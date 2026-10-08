@@ -149,8 +149,39 @@
       </div>
     </section>
 
-    <!-- PORTFOLIO PLACEHOLDER -->
-    <section id="portfolio" class="section section--surface"></section>
+    <!-- PORTFOLIO -->
+    <section id="portfolio" class="section section--surface" aria-label="Luxury packaging portfolio">
+      <div class="glow-radial glow-radial--orange" style="top: 20%; right: -10%;" aria-hidden="true"></div>
+      <div class="container">
+        <p class="section__eyebrow">High-end packaging showcase</p>
+        <h2 class="section__title">Luxury packaging <span class="section__accent">portfolio</span></h2>
+        
+        <!-- Controls -->
+        <div class="portfolio-controls">
+          <div class="filter-chips" id="portfolio-filters" role="tablist">
+            <button class="chip chip--active" data-filter="all" role="tab">All Finishes</button>
+            <button class="chip" data-filter="spotuv" role="tab">Spot UV</button>
+            <button class="chip" data-filter="foil" role="tab">Hot Gold</button>
+            <button class="chip" data-filter="emboss" role="tab">3D Emboss</button>
+            <button class="chip" data-filter="dripoff" role="tab">Drip-Off</button>
+            <button class="chip" data-filter="holographic" role="tab">Prismatic</button>
+          </div>
+          
+          <div class="segmented-control" role="radiogroup" aria-label="Studio Lighting">
+            <span class="seg-label">Light:</span>
+            <button class="seg-btn seg-btn--active" data-light="studio" role="radio" aria-checked="true">Studio</button>
+            <button class="seg-btn" data-light="raking" role="radio" aria-checked="false">Raking</button>
+            <button class="seg-btn" data-light="specular" role="radio" aria-checked="false">Specular</button>
+            <button class="seg-btn" data-light="dieline" role="radio" aria-checked="false">Die-Line CAD</button>
+          </div>
+        </div>
+
+        <!-- Carousel / Grid -->
+        <div class="portfolio-grid" id="portfolio-grid">
+          <!-- Populated by JS from config -->
+        </div>
+      </div>
+    </section>
     
     <!-- FLEET PLACEHOLDER -->
     <section id="fleet" class="section section--base"></section>
