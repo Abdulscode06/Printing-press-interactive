@@ -224,6 +224,83 @@
   }
 
   // --------------------------------------------------------------------------
+  // Fleet Segment
+  // --------------------------------------------------------------------------
+  function initFleet() {
+    const cardsWrap = $('#press-cards');
+    const tbody = $('#specs-table tbody');
+    if (!cardsWrap || !tbody || !CFG.PRESSES) return;
+
+    // We take top 3 for cards
+    const topPresses = CFG.PRESSES.slice(0, 3);
+    
+    topPresses.forEach(press => {
+      const cls = `press-card ${press.flagship ? 'press-card--flagship' : ''}`;
+      
+      const card = el('div', { class: cls }, [
+        el('h3', { class: 'press-model', text: press.model }),
+        el('div', { class: 'press-config', text: press.config }),
+        el('div', { class: 'press-stats' }, [
+          el('div', {}, [
+            el('div', { class: 'press-stat-val spec-counter', 'data-val': parseInt(press.maxSpeed.replace(/\D/g, '')) || 0 }, [el('span', {text: '0'})]),
+            el('div', { class: 'press-stat-lbl', text: 'SPH Speed' })
+          ]),
+          el('div', {}, [
+            el('div', { class: 'press-stat-val', text: press.sheetFormat.split(' ')[0] }),
+            el('div', { class: 'press-stat-lbl', text: 'Max Format' })
+          ])
+        ]),
+        el('ul', { class: 'press-highlights' }, 
+          press.highlights.map(h => el('li', { text: h }))
+        )
+      ]);
+      
+      cardsWrap.appendChild(card);
+    });
+
+    // Populate full specs table
+    CFG.PRESSES.forEach(press => {
+      const tr = el('tr', {}, [
+        el('td', { html: `<strong>${press.model}</strong>` }),
+        el('td', { text: press.config }),
+        el('td', { html: `${press.sheetFormat}<br><small style="color:var(--text-muted)">${press.substrateRange}</small>` }),
+        el('td', { text: press.maxSpeed }),
+        el('td', {}, [
+          el('span', { class: `status-badge ${press.status.toLowerCase().includes('standby') ? 'standby' : ''}`, text: press.status })
+        ])
+      ]);
+      tbody.appendChild(tr);
+    });
+
+    // Animate counters when card comes into view
+    if (window.IntersectionObserver) {
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const counter = entry.target.querySelector('.spec-counter');
+            if (counter) {
+              const target = parseInt(counter.dataset.val, 10);
+              const span = counter.querySelector('span');
+              let current = 0;
+              const step = Math.ceil(target / 45); // ~1s at 60fps
+              const update = () => {
+                current += step;
+                if (current > target) current = target;
+                span.textContent = current.toLocaleString() + '+';
+                if (current < target) requestAnimationFrame(update);
+              };
+              update();
+            }
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+
+      $$('.press-card').forEach(card => observer.observe(card));
+    }
+  }
+
+  // --------------------------------------------------------------------------
   // Boot
   // --------------------------------------------------------------------------
   function init() {
@@ -232,6 +309,7 @@
     initHeroAnimation();
     initHeroParallax();
     initPortfolio();
+    initFleet();
   }
 
   if (document.readyState === 'loading') {

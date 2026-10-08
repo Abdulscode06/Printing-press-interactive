@@ -483,3 +483,191 @@ body[data-light="dieline"] .effect-layer {
   -webkit-text-fill-color: var(--cyan);
 }
 body[data-light="dieline"] .mock-carton::after { display: none; }
+
+/* ==========================================================================
+   FLEET SECTION
+   ========================================================================== */
+
+.press-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+@media (min-width: 768px) {
+  .press-cards { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1200px) {
+  .press-cards { grid-template-columns: repeat(3, 1fr); }
+}
+
+.press-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  will-change: transform;
+  position: relative;
+  overflow: hidden;
+}
+
+.press-card--flagship {
+  border-color: rgba(255, 90, 31, 0.3);
+  box-shadow: 0 0 20px rgba(255, 90, 31, 0.05);
+}
+
+.press-card--flagship::before {
+  content: 'FLAGSHIP';
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--accent);
+  background: rgba(255, 90, 31, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .press-card:hover {
+    transform: translateY(-8px) rotateX(2deg) rotateY(2deg);
+  }
+}
+
+.press-model {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  padding-right: 4rem; /* space for flagship tag */
+}
+
+.press-config {
+  font-size: 0.875rem;
+  color: var(--text-2);
+  margin-bottom: 1rem;
+}
+
+.press-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px dashed var(--line);
+}
+
+.press-stat-val {
+  font-family: var(--font-mono);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.press-stat-lbl {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.press-highlights {
+  list-style: none;
+  font-size: 0.875rem;
+  color: var(--text-2);
+}
+
+.press-highlights li {
+  position: relative;
+  padding-left: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.press-highlights li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+
+/* Specs Table */
+.specs-details {
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.specs-details > summary {
+  padding: 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+
+.specs-details > summary::after {
+  content: '+';
+  font-size: 1.25rem;
+  font-family: var(--font-mono);
+  color: var(--accent);
+  transition: transform 0.2s ease;
+}
+
+.specs-details[open] > summary::after {
+  transform: rotate(45deg);
+}
+
+.specs-table-wrap {
+  overflow-x: auto;
+  padding: 0 1.5rem 1.5rem;
+}
+
+.specs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  min-width: 600px;
+}
+
+.specs-table th {
+  text-align: left;
+  padding: 1rem 0.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-muted);
+  font-weight: 500;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.specs-table td {
+  padding: 1rem 0.5rem;
+  border-bottom: 1px dashed var(--line);
+  color: var(--text-2);
+}
+
+.specs-table tr:last-child td {
+  border-bottom: none;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(46, 229, 157, 0.1);
+  color: var(--wa);
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+}
+.status-badge.standby {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+}
