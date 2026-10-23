@@ -203,9 +203,9 @@
     // Pointer Highlight
     if (hasFinePointer) {
       const visuals = $$('.port-card__visual');
-      let rafId = null;
 
       visuals.forEach(visual => {
+        let rafId = null;
         visual.addEventListener('mousemove', e => {
           const rect = visual.getBoundingClientRect();
           const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -215,6 +215,17 @@
             rafId = requestAnimationFrame(() => {
               visual.style.setProperty('--mx', `${x.toFixed(1)}%`);
               visual.style.setProperty('--my', `${y.toFixed(1)}%`);
+              rafId = null;
+            });
+          }
+        });
+        
+        visual.addEventListener('mouseleave', () => {
+          // Reset lighting position when leaving card
+          if (!rafId) {
+            rafId = requestAnimationFrame(() => {
+              visual.style.setProperty('--mx', '50%');
+              visual.style.setProperty('--my', '50%');
               rafId = null;
             });
           }

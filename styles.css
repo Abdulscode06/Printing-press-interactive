@@ -487,7 +487,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* Lighting Modes (Controlled by body[data-light="..."]) */
 body[data-light="studio"] .mock-carton::after {
-  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.15) 0%, transparent 60%);
+  background: radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,0.15) 0%, transparent 60%);
 }
 body[data-light="raking"] .mock-carton::after {
   background: linear-gradient(100deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.2) 5%, transparent 20%);

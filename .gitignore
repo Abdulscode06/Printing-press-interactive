@@ -3,3 +3,8 @@ screenshots/
 package-lock.json
 package.json
 test-screenshots.js
+test-fleet.js
+test-footer.js
+test-portfolio.js
+scratch/
+.agents/
